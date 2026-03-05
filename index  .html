@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRIFINITY EMS - Supervisor Assessment</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #ff0000;
+            --secondary: #ff6600;
+            --accent: #ffaa00;
+            --dark: #0a0a0a;
+            --panel: rgba(15, 15, 20, 0.98);
+            --cyan: #00ccff;
+            --purple: #ff00ff;
+        }
+        
+        body {
+            background: var(--dark);
+            color: #e0e0e0;
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, rgba(255,0,0,0.1) 0%, transparent 100%);
+            border-bottom: 3px solid var(--primary);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            text-shadow: 0 0 30px rgba(255,0,0,0.5);
+        }
+        
+        .header p {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        
+        .ranks {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .rank {
+            padding: 6px 12px;
+            border: 1px solid;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        .r10 { border-color: #555; color: #777; }
+        .r9 { border-color: #777; color: #999; }
+        .r8 { border-color: #999; color: #bbb; }
+        .r7 { border-color: #00ff88; color: #00ff88; }
+        .r6 { border-color: var(--cyan); color: var(--cyan); }
+        .r5 { border-color: var(--purple); color: var(--purple); }
+        .r4 { border-color: var(--accent); color: var(--accent); }
+        .r3 { border-color: #ff3333; color: #ff3333; font-weight: bold; }
+        
+        /* Intro */
+        .intro {
+            background: var(--panel);
+            border: 1px solid rgba(255,0,0,0.2);
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .intro h2 {
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 15px;
+        }
+        
+        .intro p {
+            color: #888;
+            max-width: 700px;
+            margin: 0 auto 20px;
+        }
+        
+        .candidate-info {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,0,0,0.3);
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 500px;
+            text-align: left;
+        }
+        
+        .candidate-info label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        
+        .candidate-info input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .feature {
+            background: rgba(0,0,0,0.3);
+            border-left: 3px solid var(--primary);
+            padding: 15px;
+        }
+        
+        .feature h4 {
+            color: var(--secondary);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .feature ul {
+            color: #777;
+            font-size: 0.85rem;
+            padding-left: 18px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+        
+        .btn:hover {
+            background: rgba(255,0,0,0.1);
+            box-shadow: 0 0 20px rgba(255,0,0,0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Test */
+        .test {
+            display: none;
+            background: var(--panel);
+            border: 1px solid rgba(255,0,0,0.2);
+        }
+        
+        .progress {
+            position: sticky;
+            top: 0;
+            background: rgba(10,10,10,0.98);
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 100;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .question {
+            padding: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .question:nth-child(even) {
+            background: rgba(255,0,0,0.02);
+        }
+        
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .q-num {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            padding: 3px 10px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            border: 1px solid;
+        }
+        
+        .diff-easy { color: #00ff88; border-color: #00ff88; }
+        .diff-med { color: var(--accent); border-color: var(--accent); }
+        .diff-hard { color: var(--primary); border-color: var(--primary); }
+        .diff-expert { color: #ff3333; border-color: #ff3333; }
+        
+        .cat {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.2);
+            color: #888;
+        }
+        
+        .scenario {
+            background: rgba(255,0,0,0.05);
+            border-left: 3px solid var(--primary);
+            padding: 20px;
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+        
+        .scenario .context {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        
+        .sop-ref {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,0,0,0.2);
+            padding: 12px;
+            margin-bottom: 15px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: #ff6666;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        
+        .option:hover {
+            background: rgba(255,0,0,0.08);
+            border-color: rgba(255,0,0,0.3);
+        }
+        
+        .option.selected {
+            background: rgba(255,0,0,0.12);
+            border-color: var(--primary);
+        }
+        
+        .opt-marker {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .option.selected .opt-marker {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(255,0,0,0.2);
+        }
+        
+        .opt-text {
+            flex: 1;
+            color: #ccc;
+        }
+        
+        /* Hidden rationale - only shown in review mode */
+        .opt-rationale {
+            display: none;
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+            padding-left: 15px;
+            border-left: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        .review-mode .opt-rationale {
+            display: block;
+        }
+        
+        .review-mode .option.correct {
+            background: rgba(0,255,136,0.15);
+            border-color: #00ff88;
+        }
+        
+        .review-mode .option.incorrect {
+            background: rgba(255,0,0,0.15);
+            border-color: var(--primary);
+        }
+        
+        .submit-container {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background: var(--primary);
+            border: none;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .submit-btn.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .submit-btn.active:hover {
+            background: #ff3300;
+            box-shadow: 0 0 30px rgba(255,0,0,0.4);
+        }
+        
+        /* Results */
+        .results {
+            display: none;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(20,0,0,0.95) 0%, rgba(30,0,0,0.98) 100%);
+            border: 3px solid var(--primary);
+            text-align: center;
+        }
+        
+        .clearance {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--primary);
+            font-size: 1rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        
+        .final-rank {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            text-shadow: 0 0 40px currentColor;
+        }
+        
+        .rank-info {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 25px;
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .rank-info h3 {
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255,0,0,0.3);
+            padding-bottom: 10px;
+        }
+        
+        .competencies {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .competencies h4 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .competencies ul {
+            list-style: none;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .competencies li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .auth li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+        }
+        
+        .prohibited li:before {
+            content: '✗';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+        
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin: 25px 0;
+        }
+        
+        .score-card {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px;
+            position: relative;
+        }
+        
+        .score-card.active {
+            transform: scale(1.05);
+            border-width: 2px;
+        }
+        
+        .score-card.active::after {
+            content: 'CURRENT';
+            position: absolute;
+            top: -8px;
+            right: 10px;
+            background: var(--primary);
+            color: #fff;
+            padding: 2px 8px;
+            font-size: 0.6rem;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .sc-rank {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #666;
+        }
+        
+        .sc-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            margin-top: 5px;
+        }
+        
+        .sc-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 8px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .sc-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 1s;
+        }
+        
+        .analysis {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,0,0,0.2);
+            padding: 20px;
+            margin-top: 25px;
+            text-align: left;
+        }
+        
+        .analysis h3 {
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 15px;
+        }
+        
+        .analysis pre {
+            font-family: 'Share Tech Mono', monospace;
+            color: #888;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        
+        .next-steps {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,170,0,0.1);
+            border-left: 3px solid var(--accent);
+            text-align: left;
+        }
+        
+        .next-steps h4 {
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        
+        .next-steps p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* Admin/Review Section */
+        .admin-panel {
+            display: none;
+            background: var(--panel);
+            border: 1px solid rgba(0,255,136,0.3);
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        .admin-panel h3 {
+            color: #00ff88;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 20px;
+        }
+        
+        .log-entry {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px;
+            margin-bottom: 15px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+        }
+        
+        .log-entry-header {
+            color: var(--cyan);
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .log-entry-details {
+            color: #aaa;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .export-btn {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .export-btn:hover {
+            background: #00cc6a;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.6rem; letter-spacing: 3px; }
+            .final-rank { font-size: 2rem; letter-spacing: 4px; }
+            .competencies { grid-template-columns: 1fr; }
+            .q-header { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚕️ TRIFINITY EMS ⚕️</h1>
+            <p>Supervisor Rank Assessment</p>
+            <div class="ranks">
+                <span class="rank r10">Bed Pan Cleaner</span>
+                <span class="rank r9">Paramedic</span>
+                <span class="rank r8">Advanced Paramedic</span>
+                <span class="rank r7">Medical Intern</span>
+                <span class="rank r6">Resident</span>
+                <span class="rank r5">Nurse</span>
+                <span class="rank r4">Doctor</span>
+                <span class="rank r3">Supervisor</span>
+            </div>
+        </div>
+
+        <div class="intro" id="intro">
+            <h2>Authorization Required</h2>
+            <p>This assessment evaluates mastery of the TRIFINITY EMS Operational Manual for Supervisor promotion. All scenarios test command authority, disciplinary procedures, and operational oversight.</p>
+            
+            <div class="candidate-info">
+                <label>Candidate Name</label>
+                <input type="text" id="candidateName" placeholder="Enter your full name" required>
+                
+                <label>Current Rank</label>
+                <input type="text" id="currentRank" placeholder="e.g., Doctor, Nurse, etc." required>
+                
+                <label>EMS ID / Badge Number</label>
+                <input type="text" id="badgeNumber" placeholder="Enter your EMS ID" required>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <h4>📋 Command Authority</h4>
+                    <ul>
+                        <li>Scene command protocols</li>
+                        <li>Chain of Command interpretation</li>
+                        <li>Operational vs Clinical authority</li>
+                        <li>Emergency decision making</li>
+                    </ul>
+                </div>
+                <div class="feature">
+                    <h4>⚠️ Disciplinary Procedures</h4>
+                    <ul>
+                        <li>Fine category application</li>
+                        <li>Investigation protocols</li>
+                        <li>Authority limitations</li>
+                        <li>Documentation requirements</li>
+                    </ul>
+                </div>
+                <div class="feature">
+                    <h4>🎯 Assessment Criteria</h4>
+                    <ul>
+                        <li>30 questions total</li>
+                        <li>Supervisor-specific scenarios</li>
+                        <li>Critical error gates</li>
+                        <li>Comprehensive scoring</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <button class="btn" id="startBtn" onclick="startTest()">Begin Assessment</button>
+        </div>
+
+        <div class="test" id="test">
+            <div class="progress">
+                <span style="font-family: 'Share Tech Mono'; color: var(--primary);">PROGRESS</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span style="font-family: 'Share Tech Mono'; color: var(--primary);" id="progressText">0/30</span>
+            </div>
+            
+            <form id="testForm">
+                <!-- Questions will be rendered here -->
+            </form>
+        </div>
+
+        <div class="results" id="results">
+            <div class="clearance" id="clearanceLevel">CLEARANCE LEVEL DETERMINED</div>
+            <div class="final-rank" id="finalRank">RANK</div>
+            
+            <div class="rank-info" id="rankInfo">
+                <!-- Populated by JS -->
+            </div>
+            
+            <div class="score-grid" id="scoreGrid">
+                <!-- Populated by JS -->
+            </div>
+            
+            <div class="analysis" id="analysis">
+                <h3>Assessment Analysis</h3>
+                <pre id="analysisText"></pre>
+            </div>
+            
+            <div class="next-steps" id="nextSteps">
+                <!-- Populated by JS -->
+            </div>
+            
+            <button class="btn" onclick="downloadResults()" style="margin-top: 30px;">Download Results</button>
+            <button class="btn" onclick="retakeTest()" style="margin-top: 15px; margin-left: 10px;">Reinitialize Assessment</button>
+        </div>
+
+        <!-- Hidden admin panel for reviewing logs -->
+        <div class="admin-panel" id="adminPanel">
+            <h3>📊 Assessment Logs (Admin Review)</h3>
+            <div id="logContainer"></div>
+            <button class="export-btn" onclick="exportAllLogs()">Export All Logs</button>
+        </div>
+    </div>
+
+    <script>
+        // Comprehensive question database based on EMS SOP
+        const questions = [
+            // BASIC QUESTIONS (Ranks 10-9)
+            {
+                num: 1,
+                title: "10-Code Interpretation",
+                diff: "easy",
+                cat: "10-Codes",
+                weight: 3,
+                ranks: [10, 9],
+                scenario: "Dispatch radios: '10-53, 10-49, P-3, Code 5 at Main and 5th.' You are responding as first responder.",
+                sop: "Section 3: 10-53=Unconscious, 10-49=Ambulance needed, P-3=Emergency priority, Code 5=Dangerous scene",
+                options: [
+                    { letter: "A", text: "Unconscious patient, ambulance needed, emergency transport, scene is dangerous", rationale: "CORRECT: Accurate interpretation of all codes", correct: true },
+                    { letter: "B", text: "Personal injury, meal break, conscious patient, scene clear", rationale: "Incorrect: Complete misinterpretation", correct: false },
+                    { letter: "C", text: "Psych challenge, backup requested, therapy patient, fire in progress", rationale: "Incorrect: Wrong code meanings", correct: false },
+                    { letter: "D", text: "Unconscious, out of service, hospital patient, structural fire", rationale: "Incorrect: Mixed wrong codes", correct: false }
+                ]
+            },
+            {
+                num: 2,
+                title: "Priority Classification",
+                diff: "easy",
+                cat: "Priority Codes",
+                weight: 3,
+                ranks: [10, 9],
+                scenario: "Multiple calls incoming: MVA with 4 critical, conscious GSW to arm, scheduled therapy, unconscious head trauma.",
+                sop: "Section 3 Part B: P-1=MCI, P-2=Surgery prep, P-3=Emergency, P-4=Conscious, P-6=Therapy",
+                options: [
+                    { letter: "A", text: "MVA=P-1, GSW=P-4, Therapy=P-6, Head trauma=P-2", rationale: "CORRECT: Proper priority classification", correct: true },
+                    { letter: "B", text: "All calls=P-3 except therapy=P-6", rationale: "Incorrect: Fails to recognize MCI and surgery prep", correct: false },
+                    { letter: "C", text: "MVA=P-2, GSW=P-3, Therapy=P-5, Head trauma=P-1", rationale: "Incorrect: MCI is always P-1", correct: false },
+                    { letter: "D", text: "Treat in order received regardless of priority", rationale: "Incorrect: Violates triage protocol", correct: false }
+                ]
+            },
+            {
+                num: 3,
+                title: "Field Triage - Unconscious Patient",
+                diff: "med",
+                cat: "1st Responder",
+                weight: 5,
+                ranks: [10, 9],
+                scenario: "You arrive first on scene. Patient A is unconscious (starfish position), breathing. Patient B is conscious with GSW to shoulder.",
+                sop: "Department Divisions: Unconscious patients require 2nd response (ambulance). Conscious non-fatal GSW can be treated on scene.",
+                options: [
+                    { letter: "A", text: "Call 2nd response for Patient A, treat Patient B on scene", rationale: "CORRECT: Follows triage protocol exactly", correct: true },
+                    { letter: "B", text: "Treat both on scene with 1st response vehicle", rationale: "Incorrect: Unconscious requires ambulance", correct: false },
+                    { letter: "C", text: "Transport both in EMS vehicle immediately", rationale: "Incorrect: Violates transport protocol", correct: false },
+                    { letter: "D", text: "Request P-1 MCI for two patients", rationale: "Incorrect: Over-triage", correct: false }
+                ]
+            },
+            {
+                num: 4,
+                title: "GSW Fatal vs Non-Fatal",
+                diff: "med",
+                cat: "1st Responder",
+                weight: 5,
+                ranks: [9, 8],
+                scenario: "Three scenes: 1) Conscious, GSW to abdomen, stable. 2) Conscious, GSW to forearm, refuses transport. 3) Unconscious, GSW to chest.",
+                sop: "1st Responder Note: Fatal areas (torso/head) require 2nd response even if conscious. Unconscious always requires 2nd response.",
+                options: [
+                    { letter: "A", text: "Scenes 1 and 3 require 2nd response, Scene 2 treat on scene", rationale: "CORRECT: Abdomen is fatal area, chest is fatal + unconscious", correct: true },
+                    { letter: "B", text: "Only Scene 3 requires 2nd response", rationale: "Incorrect: Misses fatal area exception", correct: false },
+                    { letter: "C", text: "All GSWs require 2nd response", rationale: "Incorrect: Over-triage for forearm", correct: false },
+                    { letter: "D", text: "Scene 2 requires 2nd response due to refusal", rationale: "Incorrect: Wrong priority", correct: false }
+                ]
+            },
+            {
+                num: 5,
+                title: "Advanced Paramedic Scope",
+                diff: "med",
+                cat: "Scope of Practice",
+                weight: 5,
+                ranks: [8, 7],
+                scenario: "Traumatic arrest with leg amputation. You need IV access, advanced airway. Spouse asks you to 'do surgery here' to stop bleeding.",
+                sop: "Section 2: Advanced Paramedic has IV/ALS authority. Surgery is STRICTLY RESERVED for Doctors - no exceptions.",
+                options: [
+                    { letter: "A", text: "Establish IV, advanced airway, tourniquet. Explain surgery waits for hospital Doctor", rationale: "CORRECT: Within scope, respects surgery restriction", correct: true },
+                    { letter: "B", text: "Perform field amputation completion surgery", rationale: "VIOLATION: Surgery strictly reserved for Doctors", correct: false },
+                    { letter: "C", text: "Request 10-71 for emergency surgery authorization", rationale: "Incorrect: Supervisor cannot override surgery restriction", correct: false },
+                    { letter: "D", text: "Direct Paramedic to start IV while you perform surgery", rationale: "Incorrect: Double violation - Paramedic IV + surgery", correct: false }
+                ]
+            },
+            
+            // INTERMEDIATE QUESTIONS (Ranks 8-7)
+            {
+                num: 6,
+                title: "Medical Intern Limitations",
+                diff: "med",
+                cat: "Scope of Practice",
+                weight: 5,
+                ranks: [8, 7],
+                scenario: "Medical Intern has observed 20+ wound dressing changes. Nurse is overwhelmed and asks Intern to 'handle the dressing change' independently.",
+                sop: "Section 2: Medical Intern is 'observation and assisting; never operate alone' and 'assist only (no solo)'",
+                options: [
+                    { letter: "A", text: "Explain you can assist but not perform solo, offer to help with critical patients instead", rationale: "CORRECT: Respects 'no solo' restriction", correct: true },
+                    { letter: "B", text: "Perform dressing change independently - it's routine", rationale: "Incorrect: Violates 'never operate alone'", correct: false },
+                    { letter: "C", text: "Perform with patient consent as witness", rationale: "Incorrect: Patient not qualified supervision", correct: false },
+                    { letter: "D", text: "Ask Nurse to watch from doorway while you perform", rationale: "Incorrect: Brief observation doesn't qualify", correct: false }
+                ]
+            },
+            {
+                num: 7,
+                title: "Nursing Scope - Titration",
+                diff: "hard",
+                cat: "Scope of Practice",
+                weight: 8,
+                ranks: [7, 6, 5],
+                scenario: "ICU post-op patient needs pain medication titration. Medical Intern argues they can handle this independently to 'gain experience.'",
+                sop: "Section 2: Nurse has 'medication administration, titration.' Intern is 'assist only (no solo)' - cannot perform independently.",
+                options: [
+                    { letter: "A", text: "Perform titration yourself as authorized Nurse, explain Intern must wait for direct supervision", rationale: "CORRECT: Titration within Nurse scope, Intern restricted", correct: true },
+                    { letter: "B", text: "Allow Intern to titrate under remote radio supervision", rationale: "Incorrect: 'No solo' requires physical presence", correct: false },
+                    { letter: "C", text: "Wake Resident from surgery to supervise Intern", rationale: "Incorrect: Unnecessary, Nurse has authority", correct: false },
+                    { letter: "D", text: "Allow with patient verbal consent", rationale: "Incorrect: Consent doesn't override scope", correct: false }
+                ]
+            },
+            {
+                num: 8,
+                title: "Resident Surgical Authority",
+                diff: "hard",
+                cat: "Scope of Practice",
+                weight: 8,
+                ranks: [6, 5],
+                scenario: "Hospital crisis - MCI victims arrived. Only Doctor is in emergency surgery. Resident is alone with trauma patient, ruptured spleen, crashing.",
+                sop: "Section 2: Surgery STRICTLY RESERVED for Doctors. Resident: 'surgical assist (No Solo Op)' - absolute prohibition.",
+                options: [
+                    { letter: "A", text: "Maximize non-surgical stabilization, prepare for immediate handoff, do NOT operate solo", rationale: "CORRECT: 'Strictly reserved' and 'No Solo Op' are absolute", correct: true },
+                    { letter: "B", text: "Begin emergency splenectomy - patient will die without it", rationale: "CRITICAL VIOLATION: No exceptions to surgery authority", correct: false },
+                    { letter: "C", text: "Contact Supervisor for emergency scope expansion", rationale: "Incorrect: Supervisor cannot override clinical restrictions", correct: false },
+                    { letter: "D", text: "Begin surgery with Nurse as witness to make it 'non-solo'", rationale: "Incorrect: Assistant doesn't authorize Resident to operate", correct: false }
+                ]
+            },
+            
+            // ADVANCED QUESTIONS (Ranks 6-5-4)
+            {
+                num: 9,
+                title: "Prescription Authority",
+                diff: "hard",
+                cat: "Scope of Practice",
+                weight: 8,
+                ranks: [6, 5, 4],
+                scenario: "Chronic pain patient needs refill. Doctor is on vacation 2 weeks. Nurse suggests Resident issue refill since they know the case.",
+                sop: "Section 2: 'Medication prescriptions are STRICTLY RESERVED for Doctors.' No exceptions for maintenance or convenience.",
+                options: [
+                    { letter: "A", text: "Refuse - prescriptions strictly reserved for Doctors. Contact covering Doctor or arrange telemedicine", rationale: "CORRECT: Absolute restriction", correct: true },
+                    { letter: "B", text: "Issue refill - patient stability and distress justify action", rationale: "Incorrect: 'Strictly reserved' has no exceptions", correct: false },
+                    { letter: "C", text: "Have Nurse issue under titration authority", rationale: "Incorrect: Titration ≠ prescription authority", correct: false },
+                    { letter: "D", text: "Backdate prescription to when Doctor was present", rationale: "Critical violation: Fraudulent documentation", correct: false }
+                ]
+            },
+            {
+                num: 10,
+                title: "Scene Safety vs Clinical Authority",
+                diff: "hard",
+                cat: "Chain of Command",
+                weight: 8,
+                ranks: [5, 4],
+                scenario: "P-1 MCI scene. Building collapse imminent. Doctor orders field amputation for trapped patient. Supervisor arrives, orders complete evacuation due to structural warning.",
+                sop: "Section 1: Supervisor has 'Scene command.' Doctor has 'Highest clinical authority' but safety overrides clinical decisions per Section 7.",
+                options: [
+                    { letter: "A", text: "Evacuate immediately per Supervisor order. Scene command and safety authority overrides clinical decisions", rationale: "CORRECT: Supervisor scene command includes safety overrides", correct: true },
+                    { letter: "B", text: "Proceed with amputation - clinical authority supersedes operational in medical matters", rationale: "CRITICAL ERROR: Safety overrides clinical authority", correct: false },
+                    { letter: "C", text: "Request 10-71 to Deputy Chief for decision", rationale: "Incorrect: Creates dangerous delay, Chain of Command clear", correct: false },
+                    { letter: "D", text: "Split authority - you control patient, Supervisor controls perimeter", rationale: "Incorrect: Scene command is comprehensive", correct: false }
+                ]
+            },
+            
+            // SUPERVISOR-SPECIFIC QUESTIONS (Rank 3)
+            {
+                num: 11,
+                title: "Disciplinary Authority - Fine 4",
+                diff: "expert",
+                cat: "Section 5 - Fines",
+                weight: 12,
+                ranks: [4, 3],
+                critical: true,
+                scenario: "Advanced Paramedic caught selling stolen morphine auto-injectors to civilians. Third offense. Deputy Chief unavailable 48 hours. You are Supervisor.",
+                sop: "Section 5: Fine 4 = Immediate Dismissal + $100,000 for illegal activity. Section 1: Only Chief (Rank 1) and Deputy Chief (Rank 2) have disciplinary authority.",
+                options: [
+                    { letter: "A", text: "Suspend Paramedic pending Deputy Chief return. You lack authority to impose Fine 4 but can remove from duty for safety", rationale: "CORRECT: Supervisor has staff oversight for safety removal, not disciplinary authority", correct: true },
+                    { letter: "B", text: "Impose Fine 4 immediately as Supervisor", rationale: "Incorrect: Supervisor lacks disciplinary authority", correct: false },
+                    { letter: "C", text: "Impose Fine 3 ($20,000) for EMS Fault", rationale: "Incorrect: Wrong category - this is illegal activity, not performance failure", correct: false },
+                    { letter: "D", text: "Escalate to Fine 2 since previous was Fine 2", rationale: "Incorrect: Fines are offense-specific, not sequential", correct: false }
+                ]
+            },
+            {
+                num: 12,
+                title: "Command Authority Conflict",
+                diff: "expert",
+                cat: "Chain of Command",
+                weight: 12,
+                ranks: [4, 3],
+                critical: true,
+                scenario: "Chief on administrative leave. Deputy Chief acting command issues order modifying medication protocol for cost savings. Doctor believes this compromises patient safety.",
+                sop: "Section 1: Deputy Chief has 'secondary command authority' - acts with Chief's authority when Chief unavailable. Doctor has 'Highest clinical authority' but this is advisory.",
+                options: [
+                    { letter: "A", text: "Comply with order but document clinical objections. Request review when Chief returns. Do not unilaterally override", rationale: "CORRECT: Deputy Chief has full command authority when acting", correct: true },
+                    { letter: "B", text: "Override Deputy Chief's order - your clinical authority supersedes", rationale: "CRITICAL ERROR: 'Highest clinical authority' doesn't override command", correct: false },
+                    { letter: "C", text: "Request Supervisor mediation between you and Deputy Chief", rationale: "Incorrect: Supervisor is subordinate to Deputy Chief", correct: false },
+                    { letter: "D", text: "Implement preferred protocol without informing Deputy Chief", rationale: "Critical violation: Deliberate insubordination", correct: false }
+                ]
+            },
+            {
+                num: 13,
+                title: "SOP Interpretation Authority",
+                diff: "expert",
+                cat: "Chain of Command",
+                weight: 12,
+                ranks: [3],
+                critical: true,
+                scenario: "Supervisor, you interpret 'STRICTLY RESERVED for Doctors' as applying only to complex procedures, not basic prescriptions. You direct Nurse to issue routine antibiotic to expedite flow. Doctor believes it's absolute.",
+                sop: "Section 2: 'STRICTLY RESERVED' is clinical authority language. Section 1: Chief has 'Final decision' on SOP interpretation. Supervisor has operational command, not clinical scope interpretation.",
+                options: [
+                    { letter: "A", text: "Defer to Doctor's interpretation. 'Strictly reserved' is clinical authority determination, not operational. You exceeded scope", rationale: "CORRECT: Supervisor cannot override absolute clinical prohibitions", correct: true },
+                    { letter: "B", text: "Maintain your interpretation - you have scene command authority", rationale: "Incorrect: Scene command ≠ clinical scope authority", correct: false },
+                    { letter: "C", text: "Allow this one time given patient waiting, document objection", rationale: "Incorrect: Violation cannot be authorized temporarily", correct: false },
+                    { letter: "D", text: "Issue prescription yourself as Supervisor to resolve conflict", rationale: "Incorrect: Supervisors have no prescription authority", correct: false }
+                ]
+            },
+            {
+                num: 14,
+                title: "Investigation Protocol",
+                diff: "expert",
+                cat: "Section 5 - Fines",
+                weight: 10,
+                ranks: [3],
+                scenario: "Multiple complaints about Paramedic rude behavior. Three civilian witnesses, two EMS staff complaints. Paramedic denies all allegations. You must determine appropriate action.",
+                sop: "Section 5: Fine 3 = EMS Fault ($20,000) for failing to perform duties per standards. Section 6: Documentation required. Section 1: Supervisor has staff oversight.",
+                options: [
+                    { letter: "A", text: "Conduct formal investigation with documented witness statements. If substantiated, impose Fine 3 and mandatory retraining", rationale: "CORRECT: Proper investigation and disciplinary procedure within authority", correct: true },
+                    { letter: "B", text: "Immediately dismiss Paramedic based on complaint volume", rationale: "Incorrect: Lacks authority for immediate dismissal (requires Fine 4 authority)", correct: false },
+                    { letter: "C", text: "Verbally warn Paramedic and monitor informally", rationale: "Incorrect: Multiple complaints require formal action", correct: false },
+                    { letter: "D", text: "Refer all complaints to Deputy Chief without investigation", rationale: "Incorrect: Supervisor has staff oversight responsibility", correct: false }
+                ]
+            },
+            {
+                num: 15,
+                title: "Multi-Agency Scene Command",
+                diff: "expert",
+                cat: "Chain of Command",
+                weight: 10,
+                ranks: [3],
+                scenario: "Complex scene with Fire, PD, and EMS. Fire Chief is Incident Commander. You need clarification on patient extrication vs fire suppression priorities. Fire Chief makes decisions you believe compromise medical priority.",
+                sop: "Section 3: 10-71 = Request Higher-up. Section 1: Supervisor has 'Scene command, staff oversight' for EMS personnel. Incident Commander coordinates but doesn't override EMS Chain of Command.",
+                options: [
+                    { letter: "A", text: "Request 10-71 to EMS Supervisor (yourself) for EMS personnel guidance. Fire command doesn't override EMS clinical authority", rationale: "Wait - you ARE the Supervisor. Request 10-71 to Deputy Chief if needed", correct: false },
+                    { letter: "B", text: "Request 10-71 to Deputy Chief of EMS for authority clarification on multi-agency medical priorities", rationale: "CORRECT: As Supervisor, you can request Higher-up for complex authority questions", correct: true },
+                    { letter: "C", text: "Follow Fire Chief orders without question - they are Incident Commander", rationale: "Incorrect: Incident Commander coordinates, doesn't override EMS command", correct: false },
+                    { letter: "D", text: "Make independent decision based on medical priority", rationale: "Incorrect: Violates coordination protocols", correct: false }
+                ]
+            },
+            {
+                num: 16,
+                title: "Training During Active Incidents",
+                diff: "hard",
+                cat: "Department Divisions",
+                weight: 8,
+                ranks: [3, 4],
+                scenario: "As Supervisor and Trainer, you want to send Bed Pan Cleaner to observe P-1 MCI for field experience. Another Paramedic questions this.",
+                sop: "Department Divisions: Trainers 'do not use other EMS as training.' Dispatcher ensures 'needed responders are prepared' with qualified personnel.",
+                options: [
+                    { letter: "A", text: "Prioritize P-1 MCI with qualified responders only. Schedule observation for non-critical shift", rationale: "CORRECT: 'Do not use other EMS as training' during active calls", correct: true },
+                    { letter: "B", text: "Deploy Bed Pan Cleaner - training is essential and MCI provides best learning", rationale: "Incorrect: Violates training protocol", correct: false },
+                    { letter: "C", text: "Request Chief authorization to use MCI as training exercise", rationale: "Incorrect: No override for 'do not use' directive", correct: false },
+                    { letter: "D", text: "Have trainee shadow at Dispatch center during MCI", rationale: "Incorrect: Not field training", correct: false }
+                ]
+            },
+            {
+                num: 17,
+                title: "Documentation Compliance - Mandatory Fields",
+                diff: "hard",
+                cat: "Section 6 - Reporting",
+                weight: 8,
+                ranks: [3, 4, 5],
+                scenario: "Complex GSW/MCI incident. You have: patient names, incident types, injury descriptions, EMS staff, amounts billed. Missing: exact cause of injuries (conflicting witnesses), PD officer names (they left), X-ray imagery (equipment down).",
+                sop: "Section 6.2: 'X-Ray and Injury imagery MUST be' - mandatory language. All fields required.",
+                options: [
+                    { letter: "A", text: "Delay filing until all information obtained. Contact PD, reconcile witnesses, reschedule X-rays", rationale: "CORRECT: 'MUST be' indicates mandatory, not optional", correct: true },
+                    { letter: "B", text: "File with available information, note 'Details pending' for missing fields", rationale: "Incorrect: Violates mandatory documentation requirement", correct: false },
+                    { letter: "C", text: "File without X-rays and PD names - these are supplementary", rationale: "Incorrect: 'MUST be' makes them mandatory", correct: false },
+                    { letter: "D", text: "Create best-estimate entries to complete documentation", rationale: "Incorrect: Fabrication violates integrity", correct: false }
+                ]
+            },
+            {
+                num: 18,
+                title: "Fine Escalation - Civilian Offenses",
+                diff: "hard",
+                cat: "Section 5 - Fines",
+                weight: 8,
+                ranks: [3, 4],
+                scenario: "Civilian received Fine 1 ($5,000) 3 days ago for dispatch spam. Today, same civilian called dispatch 15 times in 2 hours for non-emergencies (ride to store, medication refill, loneliness).",
+                sop: "Section 5: Fine 2 = 'Repeated endangerment or dispatch spam after receiving Fine 1' - $10,000 + 10-minute wheelchair",
+                options: [
+                    { letter: "A", text: "Impose Fine 2 ($10,000 + 10-minute wheelchair). Explicit repeat offense per SOP", rationale: "CORRECT: Exact match for Fine 2 criteria", correct: true },
+                    { letter: "B", text: "Impose Fine 1 again with warning that next will be Fine 2", rationale: "Incorrect: No warning requirement, Fine 2 triggers automatically", correct: false },
+                    { letter: "C", text: "Impose Fine 3 ($20,000) for EMS Fault", rationale: "Incorrect: Fine 3 is for personnel, not civilians", correct: false },
+                    { letter: "D", text: "Refer to PD for harassment charges", rationale: "Incorrect: SOP provides Fine 2 for this scenario", correct: false }
+                ]
+            },
+            {
+                num: 19,
+                title: "Weapons Policy - Zero Tolerance",
+                diff: "med",
+                cat: "Section 7 - General Rules",
+                weight: 5,
+                ranks: [3, 4, 5, 6, 7, 8, 9, 10],
+                scenario: "Random compliance check. Found concealed firearm on Advanced Paramedic. Claims carry permit and recent threats against EMS justify armed self-defense.",
+                sop: "Section 7: 'No firearms or weapons allowed on EMS personnel while on duty.' Absolute prohibition. High Command may search at any time.",
+                options: [
+                    { letter: "A", text: "Immediate removal of firearm, disciplinary action per weapons policy. No exceptions for permits or threats", rationale: "CORRECT: SOP absolute prohibition", correct: true },
+                    { letter: "B", text: "Allow with written warning given threat circumstances", rationale: "Incorrect: No exceptions in SOP", correct: false },
+                    { letter: "C", text: "Refer to Chief for policy exception review", rationale: "Incorrect: No exception mechanism", correct: false },
+                    { letter: "D", text: "Ignore if valid carry permit - state law supersedes", rationale: "Incorrect: Department policy takes precedence for employment", correct: false }
+                ]
+            },
+            {
+                num: 20,
+                title: "Confidentiality - Employer Request",
+                diff: "hard",
+                cat: "Section 7 - General Rules",
+                weight: 8,
+                ranks: [3, 4, 5],
+                scenario: "Patient's employer calls requesting medical records for overdose treatment. States they are 'good friends' with Chief of EMS and will 'make this worth your while.'",
+                sop: "Section 7: 'EMS records are private and confidential. Release only with valid PD warrant.' No exceptions for influence or friendship.",
+                options: [
+                    { letter: "A", text: "Refuse release. Explain records require valid PD warrant. Report attempted influence to High Command", rationale: "CORRECT: Absolute confidentiality requirement", correct: true },
+                    { letter: "B", text: "Release redacted records showing only dates", rationale: "Incorrect: Any release violates SOP", correct: false },
+                    { letter: "C", text: "Contact patient for verbal consent", rationale: "Incorrect: Patient consent doesn't override SOP", correct: false },
+                    { letter: "D", text: "Release records given Chief friendship", rationale: "Critical violation: Influence peddling", correct: false }
+                ]
+            },
+            {
+                num: 21,
+                title: "Shootout Protocol - Neutral Stance",
+                diff: "hard",
+                cat: "Section 7 - General Rules",
+                weight: 8,
+                ranks: [3, 4, 5],
+                scenario: "Active shootout, Code 5. PD engaged. Two patients down - one critical unconscious, one stable conscious with arm wound. Shooter still active.",
+                sop: "Section 7 Shootouts: 'Stay neutral. Retreat if scene reactivates. Assist winning team first.'",
+                options: [
+                    { letter: "A", text: "Stay at perimeter (neutral). Retreat further if shooting intensifies. Assist winning team first when PD secures scene", rationale: "CORRECT: Exact SOP protocol", correct: true },
+                    { letter: "B", text: "Immediate rescue of critical patient - medical duty overrides safety", rationale: "Incorrect: Violates 'stay neutral' and safety protocols", correct: false },
+                    { letter: "C", text: "Request PD escort to retrieve stable patient only", rationale: "Incorrect: Scene still active, no escort provision", correct: false },
+                    { letter: "D", text: "Set up triage at perimeter, direct patients to crawl to you", rationale: "Incorrect: Violates 'assist winning team first'", correct: false }
+                ]
+            },
+            {
+                num: 22,
+                title: "Transport Protocol - Unconscious Patient",
+                diff: "med",
+                cat: "Section 7 - General Rules",
+                weight: 5,
+                ranks: [3, 4, 5, 9],
+                scenario: "Unconscious patient 8 minutes from hospital. Ambulance is 15 minutes away. Patient stable but unconscious after head trauma. Family demands immediate transport in standard EMS vehicle, threatening to drive patient themselves.",
+                sop: "Section 7 Transport: 'All unconscious patients must be transported to hospital by ambulance. Normal EMS vehicle prohibited.'",
+                options: [
+                    { letter: "A", text: "Request immediate ambulance dispatch P-3. Stabilize on scene. Do NOT transport in EMS vehicle", rationale: "CORRECT: SOP is mandatory, no exceptions", correct: true },
+                    { letter: "B", text: "Transport immediately in EMS vehicle - stability takes precedence", rationale: "Incorrect: No stability exceptions", correct: false },
+                    { letter: "C", text: "Allow family to transport if they sign liability waiver", rationale: "Incorrect: Patient abandonment", correct: false },
+                    { letter: "D", text: "Request Supervisor override for EMS vehicle transport", rationale: "Incorrect: Supervisor cannot override mandatory protocols", correct: false }
+                ]
+            },
+            {
+                num: 23,
+                title: "Scene Codes - Code 4 Declaration",
+                diff: "med",
+                cat: "Section 3 - Response Codes",
+                weight: 5,
+                ranks: [3, 4, 5, 6, 7, 8, 9],
+                scenario: "Scene was Code 5 (Active/Dangerous) with active shooter. PD has secured perimeter, suspect in custody, building cleared. Dispatch announces status change.",
+                sop: "Section 3 Part B: Code 4 = Scene Clear/Safe for entry. Code 5 = Active Scene/Dangerous.",
+                options: [
+                    { letter: "A", text: "Status changes to Code 4 (Scene Clear/Safe for entry). EMS may enter", rationale: "CORRECT: Suspect in custody + building cleared = Code 4", correct: true },
+                    { letter: "B", text: "Status changes to Code 6 (Secured but not cleared)", rationale: "Incorrect: Code 6 doesn't exist", correct: false },
+                    { letter: "C", text: "Status remains Code 5 until all patients removed", rationale: "Incorrect: Criteria for Code 4 met", correct: false },
+                    { letter: "D", text: "Status changes to Code 0 (All Clear)", rationale: "Incorrect: Code 0 doesn't exist", correct: false }
+                ]
+            },
+            {
+                num: 24,
+                title: "Service Rates - Proper Billing",
+                diff: "med",
+                cat: "Section 4 - Price List",
+                weight: 5,
+                ranks: [3, 4, 5, 8, 9],
+                scenario: "Patient received 'Revive + Stabilizing' yesterday ($5,000). Today requests 'Revive + Mobility' upgrade due to continued impairment.",
+                sop: "Section 4: Revive + Stabilizing = $5,000. Revive + Mobility = $8,000 (includes crutch or wheelchair).",
+                options: [
+                    { letter: "A", text: "Additional $3,000 ($8,000 total). Patient receives crutch OR wheelchair issued", rationale: "CORRECT: Proper pricing and equipment", correct: true },
+                    { letter: "B", text: "Additional $2,500 ($7,500 total). Wheelchair only", rationale: "Incorrect: Wrong pricing", correct: false },
+                    { letter: "C", text: "No additional cost - upgrade included in original", rationale: "Incorrect: Distinct services with distinct rates", correct: false },
+                    { letter: "D", text: "Additional $5,500 ($10,500 total)", rationale: "Incorrect: Wrong calculation", correct: false }
+                ]
+            },
+            {
+                num: 25,
+                title: "Equipment Return - Resignation",
+                diff: "easy",
+                cat: "Section 7 - General Rules",
+                weight: 3,
+                ranks: [3, 4, 5, 6, 7, 8, 9, 10],
+                scenario: "Paramedic resigning. Has personalized gear: custom embroidered jacket, modified radio holster, upgraded stethoscope (personally purchased but used for work). Wants to keep as mementos.",
+                sop: "Section 7 Equipment: 'Return all property upon resignation.' No exceptions for personalization or purchase source.",
+                options: [
+                    { letter: "A", text: "Return all EMS gear including personalized items. SOP requires 'all property' returned", rationale: "CORRECT: Absolute requirement", correct: true },
+                    { letter: "B", text: "Keep personalized items - they were modified/purchased by you", rationale: "Incorrect: No personalization exceptions", correct: false },
+                    { letter: "C", text: "Purchase items from department at depreciated value", rationale: "Incorrect: No buyout provision", correct: false },
+                    { letter: "D", text: "Leave in locker with note - constitutes return", rationale: "Incorrect: Abandonment ≠ proper return", correct: false }
+                ]
+            },
+            {
+                num: 26,
+                title: "Malpractice Review Participation",
+                diff: "hard",
+                cat: "Scope of Practice",
+                weight: 8,
+                ranks: [3, 4, 5],
+                scenario: "Quality review meeting. Resident being reviewed for adverse outcome. Doctor asks for your input as Nurse on whether Resident should be cleared or referred for disciplinary action.",
+                sop: "Section 2: Doctor has 'Malpractice review' authority. Section 1: Chief has 'disciplinary authority.' Nurse can provide factual observation but not recommendations.",
+                options: [
+                    { letter: "A", text: "Provide factual observations of what you witnessed. Defer to Doctor's malpractice review authority", rationale: "CORRECT: Maintain scope boundaries", correct: true },
+                    { letter: "B", text: "Provide detailed assessment and recommend disciplinary referral", rationale: "Incorrect: Exceeds Nurse scope", correct: false },
+                    { letter: "C", text: "Refuse to participate - review is outside your scope", rationale: "Incorrect: Factual observation is appropriate", correct: false },
+                    { letter: "D", text: "Contact Chief directly with your concerns", rationale: "Incorrect: Violates Chain of Command", correct: false }
+                ]
+            },
+            {
+                num: 27,
+                title: "10-71 Higher-up Request",
+                diff: "med",
+                cat: "10-Codes",
+                weight: 5,
+                ranks: [3, 4, 5, 8],
+                scenario: "Complex scene with multiple agencies. Fire Chief is Incident Commander. You need clarification on patient extrication vs fire suppression. Fire Chief states they have scene command.",
+                sop: "Section 3: 10-71 = Request Higher-up. Section 1: Supervisor has 'Scene command, staff oversight' for EMS personnel.",
+                options: [
+                    { letter: "A", text: "Request 10-71 to EMS Supervisor for EMS personnel guidance. Fire command doesn't override EMS Chain of Command", rationale: "CORRECT: Separate agency hierarchies", correct: true },
+                    { letter: "B", text: "Follow Fire Chief orders without question", rationale: "Incorrect: Incident Commander coordinates, doesn't override", correct: false },
+                    { letter: "C", text: "Request 10-71 to Deputy Chief - Fire Chief outranks Supervisor", rationale: "Incorrect: Different agencies, separate hierarchies", correct: false },
+                    { letter: "D", text: "Make independent decision based on medical priority", rationale: "Incorrect: Violates coordination", correct: false }
+                ]
+            },
+            {
+                num: 28,
+                title: "Active Scene - Code 5 Protocol",
+                diff: "med",
+                cat: "Section 3 - Response Codes",
+                weight: 5,
+                ranks: [3, 4, 5, 8, 9],
+                scenario: "Approaching scene. Dispatch: 'Scene is now Code 5, active shooter, PD engaged. Patient down in open area. 10-53, 10-49, P-3.' You are 2 minutes out. Patient visible, bleeding heavily, conscious and waving for help.",
+                sop: "Section 3 Part B: Code 5 = Active Scene/Dangerous area. EMS must 'stay at safe distance.' Section 7: 'Do not enter active scenes.'",
+                options: [
+                    { letter: "A", text: "Stage at safe distance. Maintain visual if possible. Wait for Code 4 or PD secure", rationale: "CORRECT: SOP mandates safe distance", correct: true },
+                    { letter: "B", text: "Proceed to patient immediately - conscious and requesting help", rationale: "Incorrect: Violates Code 5 protocol", correct: false },
+                    { letter: "C", text: "Request 10-71 for armed escort authorization", rationale: "Incorrect: No armed escort provision", correct: false },
+                    { letter: "D", text: "Drive quickly, perform rapid extraction, retreat", rationale: "Incorrect: Violates safe distance mandate", correct: false }
+                ]
+            },
+            {
+                num: 29,
+                title: "Dispatcher Authority",
+                diff: "med",
+                cat: "Department Divisions",
+                weight: 5,
+                ranks: [3, 4, 5, 9],
+                scenario: "You are Paramedic who is also Trainer. As Dispatcher, managing call volume. Want to send Bed Pan Cleaner to P-1 MCI to observe. Another Paramedic questions this.",
+                sop: "Department Divisions: Dispatcher 'ensures calls are handled and needed responders are prepared.' Trainers 'do not use other EMS as training.'",
+                options: [
+                    { letter: "A", text: "As Dispatcher, prioritize P-1 MCI with qualified responders only. Schedule observation for non-critical shift", rationale: "CORRECT: Separate roles, no training during active incidents", correct: true },
+                    { letter: "B", text: "Deploy Bed Pan Cleaner to P-1 MCI for observation", rationale: "Incorrect: Violates training protocol", correct: false },
+                    { letter: "C", text: "Request Supervisor authorization for MCI training", rationale: "Incorrect: No override for 'do not use' directive", correct: false },
+                    { letter: "D", text: "Have trainee shadow you at Dispatch center", rationale: "Incorrect: Not field training", correct: false }
+                ]
+            },
+            {
+                num: 30,
+                title: "Comprehensive Supervisor Authority",
+                diff: "expert",
+                cat: "Chain of Command",
+                weight: 15,
+                ranks: [3],
+                critical: true,
+                scenario: "You are newly promoted Supervisor (Rank 3). Deputy Chief is unavailable. Doctor (Rank 4) insists on performing procedure you believe violates SOP. Nurse (Rank 5) requests clarification on whether to follow your order or Doctor's. Advanced Paramedic (Rank 8) caught with policy violation. Multiple scenes need resource allocation. How do you proceed?",
+                sop: "Section 1: Supervisor has 'Scene command, staff oversight, training standards.' Deputy Chief has 'secondary command authority.' Doctor has 'Highest clinical authority.' Chief has 'Final decision, disciplinary authority.'",
+                options: [
+                    { letter: "A", text: "Exercise scene command over resource allocation and staff oversight. Defer to Doctor's clinical authority on medical matters. Document concerns about SOP violation for Chief review. Handle Paramedic violation per staff oversight authority (suspension pending Deputy Chief). Clarify to Nurse that you have operational command, Doctor has clinical authority", rationale: "CORRECT: Proper authority boundaries - operational vs clinical", correct: true },
+                    { letter: "B", text: "Override Doctor's clinical decision - you outrank them", rationale: "CRITICAL ERROR: Supervisor doesn't outrank Doctor clinically", correct: false },
+                    { letter: "C", text: "Defer all decisions to Doctor since they have 'highest clinical authority'", rationale: "Incorrect: Abdicates operational command", correct: false },
+                    { letter: "D", text: "Impose disciplinary action on Paramedic including Fine 4 dismissal", rationale: "Incorrect: Lacks disciplinary authority", correct: false }
+                ]
+            }
+        ];
+
+        // Rank data including Supervisor
+        const rankData = {
+            10: { title: "Bed Pan Cleaner", color: "#666666", clearance: "LEVEL 1 - PROBATIONARY", description: "Observation-only status", scope: ["Basic 10-Code recognition", "Scene safety protocols"], limitations: ["No independent patient contact", "No clinical procedures"], next: "Complete basic training" },
+            9: { title: "Paramedic", color: "#888888", clearance: "LEVEL 2 - FIELD OPERATIONS", description: "Basic Life Support authorized", scope: ["10-Code proficiency", "Conscious patient treatment"], limitations: ["No ALS procedures", "No IV therapy"], next: "ALS certification" },
+            8: { title: "Advanced Paramedic", color: "#aaaaaa", clearance: "LEVEL 3 - ADVANCED LIFE SUPPORT", description: "ALS and IV therapy authorized", scope: ["Advanced trauma care", "IV therapy"], limitations: ["No hospital-based care", "No prescriptions"], next: "Medical Internship" },
+            7: { title: "Medical Intern", color: "#00ff88", clearance: "LEVEL 4 - CLINICAL TRAINEE", description: "Hospital observation only", scope: ["Assisting authorized personnel", "Patient observation"], limitations: ["NEVER operate alone", "No independent care"], next: "Residency" },
+            6: { title: "Resident", color: "#00ccff", clearance: "LEVEL 5 - RESIDENCY", description: "Independent hospital care", scope: ["Independent hospital care", "Surgical assistance"], limitations: ["NO SOLO SURGERY", "No prescriptions"], next: "Nursing certification" },
+            5: { title: "Nurse", color: "#ff00ff", clearance: "LEVEL 6 - CLINICAL AUTHORITY", description: "Medication and titration authority", scope: ["Medication administration", "Titration authority"], limitations: ["No surgery", "No prescriptions"], next: "Medical degree" },
+            4: { title: "Doctor", color: "#ffaa00", clearance: "LEVEL 7 - CHIEF CLINICAL AUTHORITY", description: "Highest clinical authority", scope: ["Complex surgery", "Prescriptions", "Malpractice review"], limitations: ["No scene command override", "Subject to High Command"], next: "Supervisor track" },
+            3: { title: "Supervisor", color: "#ff3333", clearance: "LEVEL 8 - OPERATIONAL COMMAND", description: "Scene command and staff oversight", scope: ["Scene command authority", "Staff oversight", "Training standards", "Resource allocation", "Investigation authority", "Safety command override"], limitations: ["No disciplinary authority (Fine 4)", "Cannot override clinical 'strictly reserved'", "Cannot override Deputy Chief command"], next: "Deputy Chief promotion" }
+        };
+
+        let answers = {};
+        let candidateInfo = {};
+        const totalQuestions = 30;
+        let assessmentLog = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for admin mode
+            if (window.location.hash === '#admin') {
+                showAdminPanel();
+            }
+        });
+
+        function validateStart() {
+            const name = document.getElementById('candidateName').value.trim();
+            const rank = document.getElementById('currentRank').value.trim();
+            const badge = document.getElementById('badgeNumber').value.trim();
+            
+            const btn = document.getElementById('startBtn');
+            if (name && rank && badge) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+        }
+
+        document.getElementById('candidateName').addEventListener('input', validateStart);
+        document.getElementById('currentRank').addEventListener('input', validateStart);
+        document.getElementById('badgeNumber').addEventListener('input', validateStart);
+
+        function startTest() {
+            candidateInfo = {
+                name: document.getElementById('candidateName').value.trim(),
+                currentRank: document.getElementById('currentRank').value.trim(),
+                badgeNumber: document.getElementById('badgeNumber').value.trim(),
+                startTime: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            };
+
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('test').style.display = 'block';
+            renderQuestions();
+            updateProgress();
+        }
+
+        function renderQuestions() {
+            const form = document.getElementById('testForm');
+            form.innerHTML = questions.map(q => `
+                <div class="question" data-weight="${q.weight}" data-ranks="${q.ranks.join(',')}" ${q.critical ? 'data-critical="true"' : ''}>
+                    <div class="q-header">
+                        <span class="q-num">SCENARIO ${q.num.toString().padStart(2, '0')} / ${q.title}</span>
+                        <div class="tags">
+                            <span class="tag diff-${q.diff}">${q.diff === 'easy' ? 'Basic' : q.diff === 'med' ? 'Intermediate' : q.diff === 'hard' ? 'Advanced' : 'Expert'}</span>
+                            <span class="tag cat">${q.cat}</span>
+                        </div>
+                    </div>
+                    <div class="scenario">
+                        <div class="context">${q.scenario}</div>
+                    </div>
+                    <div class="sop-ref">REFERENCE: ${q.sop}</div>
+                    <div class="options">
+                        ${q.options.map((opt, idx) => `
+                            <label class="option" onclick="selectOption(this, ${q.num}, ${idx})" data-correct="${opt.correct}">
+                                <div class="opt-marker">${opt.letter}</div>
+                                <div class="opt-text">
+                                    ${opt.text}
+                                    <div class="opt-rationale">${opt.rationale}</div>
+                                </div>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <input type="hidden" name="q${q.num}" id="q${q.num}">
+                </div>
+            `).join('') + `
+                <div class="submit-container">
+                    <button type="button" class="submit-btn" id="submitBtn" onclick="submitAssessment()">Submit Assessment</button>
+                </div>
+            `;
+        }
+
+        function selectOption(element, qNum, optionIdx) {
+            const question = element.closest('.question');
+            question.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            answers[qNum] = {
+                selected: optionIdx,
+                correct: questions.find(q => q.num === qNum).options[optionIdx].correct
+            };
+            document.getElementById(`q${qNum}`).value = optionIdx;
+            
+            updateProgress();
+            checkCompletion();
+        }
+
+        function updateProgress() {
+            const answered = Object.keys(answers).length;
+            const pct = (answered / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressText').textContent = `${answered}/${totalQuestions}`;
+        }
+
+        function checkCompletion() {
+            const btn = document.getElementById('submitBtn');
+            if (Object.keys(answers).length === totalQuestions) {
+                btn.classList.add('active');
+                btn.textContent = 'Execute Assessment Protocol →';
+            }
+        }
+
+        function submitAssessment() {
+            const endTime = new Date().toISOString();
+            const timeTaken = Math.round((new Date(endTime) - new Date(candidateInfo.startTime)) / 1000 / 60); // minutes
+            
+            let scores = { 10: 0,             9: 0, 8: 0, 7: 0, 6: 0, 5: 0, 4: 0, 3: 0 };
+            let penalties = 0;
+            let criticalErrors = [];
+            let detailedAnswers = [];
+
+            // Calculate scores
+            questions.forEach(q => {
+                const ans = answers[q.num];
+                const selectedOption = q.options[ans.selected];
+                const isCorrect = ans.correct;
+                
+                detailedAnswers.push({
+                    questionNum: q.num,
+                    questionTitle: q.title,
+                    selectedAnswer: selectedOption.letter,
+                    selectedText: selectedOption.text,
+                    correctAnswer: q.options.find(o => o.correct).letter,
+                    isCorrect: isCorrect,
+                    rationale: selectedOption.rationale,
+                    critical: q.critical || false,
+                    category: q.cat
+                });
+
+                if (isCorrect) {
+                    q.ranks.forEach(rank => {
+                        scores[rank] += q.weight;
+                    });
+                } else if (q.critical) {
+                    penalties += 8;
+                    criticalErrors.push(q.num);
+                }
+            });
+
+            // Apply penalties
+            Object.keys(scores).forEach(r => scores[r] = Math.max(0, scores[r] - penalties));
+
+            // Determine rank with strict gates
+            let assignedRank = 10;
+            let maxScore = scores[10];
+
+            // Check critical gates for higher ranks
+            const criticalGates = {
+                3: [11, 12, 13, 30], // Supervisor critical questions
+                4: [6, 7, 8, 9, 10], // Doctor critical questions
+                5: [6, 7, 8],        // Nurse critical questions
+                6: [6, 7, 8],        // Resident critical questions
+                7: [6],              // Intern critical questions
+                8: [5]               // Advanced Paramedic critical questions
+            };
+
+            // Check from highest to lowest with gates
+            for (let r = 3; r <= 10; r++) {
+                const requiredCritical = criticalGates[r] || [];
+                const allCriticalCorrect = requiredCritical.every(qNum => 
+                    answers[qNum] && answers[qNum].correct
+                );
+
+                if (scores[r] >= maxScore && allCriticalCorrect) {
+                    assignedRank = r;
+                    maxScore = scores[r];
+                    break; // Stop at highest qualified rank
+                }
+            }
+
+            // Create assessment log
+            assessmentLog = {
+                candidateInfo: candidateInfo,
+                endTime: endTime,
+                timeTakenMinutes: timeTaken,
+                scores: scores,
+                assignedRank: assignedRank,
+                finalRankTitle: rankData[assignedRank].title,
+                penalties: penalties,
+                criticalErrors: criticalErrors,
+                totalCorrect: Object.values(answers).filter(a => a.correct).length,
+                totalQuestions: totalQuestions,
+                percentage: Math.round((Object.values(answers).filter(a => a.correct).length / totalQuestions) * 100),
+                detailedAnswers: detailedAnswers,
+                ipAddress: 'logged-locally', // Would need server for real IP
+                assessmentVersion: '1.0-Supervisor'
+            };
+
+            // Save to localStorage for admin review
+            saveLog(assessmentLog);
+
+            displayResults(assignedRank, scores, criticalErrors, timeTaken);
+        }
+
+        function saveLog(log) {
+            // Get existing logs or initialize
+            let logs = JSON.parse(localStorage.getItem('emsAssessmentLogs') || '[]');
+            logs.push(log);
+            localStorage.setItem('emsAssessmentLogs', JSON.stringify(logs));
+            
+            // Also save as current session for download
+            sessionStorage.setItem('currentAssessment', JSON.stringify(log));
+        }
+
+        function displayResults(rank, scores, errors, timeTaken) {
+            document.getElementById('test').style.display = 'none';
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+            
+            const info = rankData[rank];
+            
+            document.getElementById('clearanceLevel').textContent = info.clearance;
+            const rankEl = document.getElementById('finalRank');
+            rankEl.textContent = info.title;
+            rankEl.style.color = info.color;
+            
+            // Build rank info
+            const rankInfo = document.getElementById('rankInfo');
+            rankInfo.innerHTML = `
+                <h3>Operational Authority</h3>
+                <p style="color: #aaa; margin-bottom: 20px;">${info.description}</p>
+                <div class="competencies">
+                    <div class="competency-list auth">
+                        <h4 style="color: #00ff88;">✓ AUTHORIZED SCOPE</h4>
+                        <ul>
+                            ${info.scope.map(s => `<li>${s}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="competency-list prohibited">
+                        <h4 style="color: #ff0000;">✗ PROHIBITED ACTIONS</h4>
+                        <ul>
+                            ${info.limitations.map(l => `<li>${l}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: rgba(255,170,0,0.1); border-left: 3px solid var(--accent);">
+                    <strong style="color: var(--accent);">NEXT PHASE:</strong> ${info.next}
+                </div>
+            `;
+
+            // Build score grid
+            const grid = document.getElementById('scoreGrid');
+            grid.innerHTML = '';
+            
+            for (let r = 3; r <= 10; r++) {
+                const rInfo = rankData[r];
+                const isActive = r === rank;
+                const maxPossible = calculateMaxScore(r);
+                const pct = Math.min(100, (scores[r] / maxPossible) * 100);
+                
+                grid.innerHTML += `
+                    <div class="score-card ${isActive ? 'active' : ''}" style="${isActive ? 'border-color: ' + rInfo.color : ''}">
+                        <div class="sc-rank" style="${isActive ? 'color: ' + rInfo.color : ''}">${rInfo.title}</div>
+                        <div class="sc-val" style="color: ${rInfo.color}">${scores[r]} pts</div>
+                        <div style="font-size: 0.75rem; color: #555;">Max: ${maxPossible} pts</div>
+                        <div class="sc-bar">
+                            <div class="sc-fill" style="width: ${pct}%; background: ${rInfo.color}"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Build analysis
+            let analysisText = `ASSESSMENT SUMMARY\n`;
+            analysisText += `==================\n`;
+            analysisText += `Candidate: ${candidateInfo.name}\n`;
+            analysisText += `Badge: ${candidateInfo.badgeNumber}\n`;
+            analysisText += `Current Rank: ${candidateInfo.currentRank}\n`;
+            analysisText += `Time Taken: ${timeTaken} minutes\n`;
+            analysisText += `Final Score: ${assessmentLog.percentage}%\n`;
+            analysisText += `Correct Answers: ${assessmentLog.totalCorrect}/${totalQuestions}\n\n`;
+
+            analysisText += `CRITICAL ERROR ANALYSIS:\n`;
+            if (errors.length === 0) {
+                analysisText += `✓ No critical errors detected\n\n`;
+            } else {
+                analysisText += `⚠ CRITICAL ERRORS IN QUESTIONS: ${errors.join(', ')}\n`;
+                analysisText += `These indicate potential for scope violation or command confusion\n\n`;
+            }
+
+            analysisText += `RANK SCORES:\n`;
+            for (let r = 10; r >= 3; r--) {
+                const status = r === rank ? '← ASSIGNED' : '';
+                analysisText += `Rank ${r} (${rankData[r].title}): ${scores[r]} pts ${status}\n`;
+            }
+
+            analysisText += `\nCOMPETENCY BREAKDOWN:\n`;
+            const categories = {};
+            detailedAnswers.forEach(ans => {
+                if (!categories[ans.category]) categories[ans.category] = { correct: 0, total: 0 };
+                categories[ans.category].total++;
+                if (ans.isCorrect) categories[ans.category].correct++;
+            });
+
+            Object.entries(categories).forEach(([cat, data]) => {
+                const pct = Math.round((data.correct / data.total) * 100);
+                analysisText += `${cat}: ${data.correct}/${data.total} (${pct}%)\n`;
+            });
+
+            document.getElementById('analysisText').textContent = analysisText;
+
+            // Next steps
+            document.getElementById('nextSteps').innerHTML = `
+                <h4>ASSESSMENT COMPLETE</h4>
+                <p>Your results have been logged for review by High Command. Download your results using the button below. Assessment ID: ${candidateInfo.badgeNumber}-${Date.now().toString().slice(-6)}</p>
+            `;
+
+            window.scrollTo(0, 0);
+        }
+
+        function calculateMaxScore(rank) {
+            // Calculate maximum possible score for each rank
+            let max = 0;
+            questions.forEach(q => {
+                if (q.ranks.includes(rank)) {
+                    max += q.weight;
+                }
+            });
+            return max;
+        }
+
+        function downloadResults() {
+            if (!assessmentLog) {
+                assessmentLog = JSON.parse(sessionStorage.getItem('currentAssessment'));
+            }
+
+            const filename = `EMS_Assessment_${candidateInfo.badgeNumber}_${new Date().toISOString().split('T')[0]}.json`;
+            const dataStr = JSON.stringify(assessmentLog, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = filename;
+            link.click();
+            
+            // Also create human-readable text version
+            const textContent = generateTextReport(assessmentLog);
+            const textBlob = new Blob([textContent], { type: 'text/plain' });
+            const textLink = document.createElement('a');
+            textLink.href = URL.createObjectURL(textBlob);
+            textLink.download = filename.replace('.json', '.txt');
+            textLink.click();
+        }
+
+        function generateTextReport(log) {
+            let text = `TRIFINITY EMS SUPERVISOR ASSESSMENT REPORT\n`;
+            text += `==========================================\n\n`;
+            text += `CANDIDATE INFORMATION\n`;
+            text += `---------------------\n`;
+            text += `Name: ${log.candidateInfo.name}\n`;
+            text += `Current Rank: ${log.candidateInfo.currentRank}\n`;
+            text += `Badge Number: ${log.candidateInfo.badgeNumber}\n`;
+            text += `Assessment Date: ${new Date(log.candidateInfo.startTime).toLocaleString()}\n`;
+            text += `Time Taken: ${log.timeTakenMinutes} minutes\n\n`;
+            
+            text += `RESULTS\n`;
+            text += `-------\n`;
+            text += `Assigned Rank: ${log.finalRankTitle} (Rank ${log.assignedRank})\n`;
+            text += `Overall Score: ${log.percentage}%\n`;
+            text += `Correct Answers: ${log.totalCorrect}/${log.totalQuestions}\n`;
+            text += `Critical Errors: ${log.criticalErrors.length > 0 ? log.criticalErrors.join(', ') : 'None'}\n\n`;
+            
+            text += `DETAILED BREAKDOWN\n`;
+            text += `------------------\n`;
+            log.detailedAnswers.forEach(ans => {
+                text += `\nQ${ans.questionNum}: ${ans.questionTitle}\n`;
+                text += `Category: ${ans.category}\n`;
+                text += `Your Answer: ${ans.selectedAnswer} - ${ans.selectedText.substring(0, 60)}...\n`;
+                text += `Correct: ${ans.isCorrect ? 'YES ✓' : 'NO ✗'}\n`;
+                if (!ans.isCorrect) {
+                    text += `Rationale: ${ans.rationale}\n`;
+                }
+            });
+            
+            return text;
+        }
+
+        function retakeTest() {
+            answers = {};
+            assessmentLog = null;
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('intro').style.display = 'block';
+            document.querySelectorAll('.candidate-info input').forEach(input => input.value = '');
+            document.getElementById('startBtn').disabled = true;
+            window.scrollTo(0, 0);
+        }
+
+        // Admin panel functions
+        function showAdminPanel() {
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('test').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            renderLogs();
+        }
+
+        function renderLogs() {
+            const logs = JSON.parse(localStorage.getItem('emsAssessmentLogs') || '[]');
+            const container = document.getElementById('logContainer');
+            
+            if (logs.length === 0) {
+                container.innerHTML = '<p style="color: #666;">No assessment logs found.</p>';
+                return;
+            }
+
+            // Sort by date, newest first
+            logs.reverse();
+            
+            container.innerHTML = logs.map((log, idx) => `
+                <div class="log-entry">
+                    <div class="log-entry-header">
+                        #${logs.length - idx} | ${log.candidateInfo.name} | ${log.finalRankTitle} | ${new Date(log.candidateInfo.startTime).toLocaleString()}
+                    </div>
+                    <div class="log-entry-details">
+                        <div>Badge: ${log.candidateInfo.badgeNumber}</div>
+                        <div>Score: ${log.percentage}%</div>
+                        <div>Time: ${log.timeTakenMinutes}min</div>
+                        <div>Critical Errors: ${log.criticalErrors.length}</div>
+                        <div>From: ${log.candidateInfo.currentRank}</div>
+                    </div>
+                    <button class="btn" style="margin-top: 10px; padding: 5px 15px; font-size: 0.8rem;" 
+                            onclick="downloadSpecificLog(${logs.length - 1 - idx})">Download Full Report</button>
+                </div>
+            `).join('');
+        }
+
+        function downloadSpecificLog(index) {
+            const logs = JSON.parse(localStorage.getItem('emsAssessmentLogs') || '[]');
+            const log = logs[index];
+            
+            const filename = `EMS_Assessment_${log.candidateInfo.badgeNumber}_${new Date(log.candidateInfo.startTime).toISOString().split('T')[0]}.json`;
+            const dataStr = JSON.stringify(log, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = filename;
+            link.click();
+        }
+
+        function exportAllLogs() {
+            const logs = JSON.parse(localStorage.getItem('emsAssessmentLogs') || '[]');
+            const exportData = {
+                exportDate: new Date().toISOString(),
+                totalAssessments: logs.length,
+                assessments: logs
+            };
+            
+            const filename = `EMS_All_Assessments_${new Date().toISOString().split('T')[0]}.json`;
+            const dataBlob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = filename;
+            link.click();
+        }
+
+        // Prevent cheating - disable right click, inspect element warnings
+        document.addEventListener('contextmenu', e => {
+            if (document.getElementById('test').style.display === 'block') {
+                e.preventDefault();
+                alert('Right-click is disabled during assessment.');
+            }
+        });
+
+        document.addEventListener('keydown', e => {
+            // Prevent F12, Ctrl+Shift+I, Ctrl+U during test
+            if (document.getElementById('test').style.display === 'block') {
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                    (e.ctrlKey && e.key === 'u')) {
+                    e.preventDefault();
+                    alert('Developer tools are disabled during assessment.');
+                }
+            }
+        });
+
+        // Warn before leaving during test
+        window.addEventListener('beforeunload', e => {
+            if (document.getElementById('test').style.display === 'block' && 
+                Object.keys(answers).length < totalQuestions) {
+                e.preventDefault();
+                e.returnValue = 'Assessment in progress. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+    </script>
+</body>
+</html>
