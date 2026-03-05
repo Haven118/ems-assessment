@@ -1261,6 +1261,31 @@
         const totalQuestions = 30;
         let assessmentLog = null;
 
+        // GOOGLE SHEETS INTEGRATION - Global scope
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzBsSkDDFu5pUPxtr-D0CKCeMQaikDMOo9pO4GDsmfp1nXYV7qIvWXb7sPhkax06FKu/exec';
+
+        function saveLog(log) {
+            // Still save locally as backup
+            let logs = JSON.parse(localStorage.getItem('emsAssessmentLogs') || '[]');
+            logs.push(log);
+            localStorage.setItem('emsAssessmentLogs', JSON.stringify(logs));
+            sessionStorage.setItem('currentAssessment', JSON.stringify(log));
+            
+            // Send to Google Sheets
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(log)
+            }).then(() => {
+                console.log('Saved to Google Sheets');
+            }).catch(err => {
+                console.log('Sheet save failed, local only:', err);
+            });
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Check for admin mode
@@ -1452,20 +1477,9 @@
                 assessmentVersion: '1.0-Supervisor'
             };
 
-            // Save to localStorage for admin review
+            // Save to Google Sheets and show results
             saveLog(assessmentLog);
-
             displayResults(assignedRank, scores, criticalErrors, timeTaken);
-        }
-
-        function saveLog(log) {
-            // Get existing logs or initialize
-            let logs = JSON.parse(localStorage.getItem('emsAssessmentLogs') || '[]');
-            logs.push(log);
-            localStorage.setItem('emsAssessmentLogs', JSON.stringify(logs));
-            
-            // Also save as current session for download
-            sessionStorage.setItem('currentAssessment', JSON.stringify(log));
         }
 
         function displayResults(rank, scores, errors, timeTaken) {
@@ -1753,6 +1767,3 @@
     </script>
 </body>
 </html>
-
-
-
